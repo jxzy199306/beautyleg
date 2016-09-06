@@ -35,9 +35,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.VideoActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
-            android:screenOrientation="sensor"></activity>
+            android:screenOrientation="landscape"></activity>
 
         <service
             android:name=".ui.service.DownloadService"

@@ -365,6 +365,11 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     return;
                 }
                 String url = response.body().getVideoList().get(response.body().getVideoList().size() - 1).getVideoUrl();
+              //  Log.e("TAG",url+"                        00000000000000" );
+                if(url==null){
+                    Toast.makeText(getActivity(), "未获取到视频地址", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Bundle bundle = new Bundle();
                 switch (task){
                     case Constants.GET_VIDEO_URL_SUCC:

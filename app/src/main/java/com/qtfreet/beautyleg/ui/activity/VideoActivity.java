@@ -60,6 +60,7 @@ public class VideoActivity extends BaseActivity {
             finish();
         }
         player = new GiraffePlayer(this);
+        player.setFullScreenOnly(true);
         player.onComplete(new Runnable() {
             @Override
             public void run() {
@@ -121,15 +122,6 @@ public class VideoActivity extends BaseActivity {
         super.onDestroy();
         if (player != null) {
             player.onDestroy();
-        }
-    }
-
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (player != null) {
-            player.onConfigurationChanged(newConfig);
         }
     }
 
