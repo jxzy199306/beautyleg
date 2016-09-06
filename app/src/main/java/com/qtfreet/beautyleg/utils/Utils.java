@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.widget.TableLayout;
 
+import com.qtfreet.beautyleg.data.Constants;
 import com.qtfreet.beautyleg.ui.App;
 
 import java.security.MessageDigest;
@@ -23,7 +24,7 @@ import okhttp3.OkHttpClient;
  * Created by qtfreet00 on 2016/3/4.
  */
 public class Utils {
-    public static void addFragment(TableLayout tableLayout, ArrayList<String> arrayList){
+    public static void addFragment(TableLayout tableLayout, ArrayList<String> arrayList) {
 
 
     }
@@ -68,12 +69,13 @@ public class Utils {
         return false;
     }
 
-    public static OkHttpClient getOkHttpClient(){
+    public static OkHttpClient getOkHttpClient() {
         OkHttpClient client = new OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS).writeTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
         return client;
     }
+
     public static String MD5(String sourceStr) {
         String result = "";
         try {
@@ -95,6 +97,32 @@ public class Utils {
             System.out.println(e);
         }
         return result;
+    }
+
+
+
+    public static String getType(int type) {
+        String gid = "9";
+        if (type == Constants.AISS) {
+            gid = String.valueOf(Constants.AISS);
+        } else if (type == Constants.BL) {
+            gid = String.valueOf(Constants.BL);
+        } else if (type == Constants.YOUGUO) {
+            gid = String.valueOf(Constants.YOUGUO);
+        } else if (type == Constants.SIBAO) {
+            gid = String.valueOf(Constants.SIBAO);
+        } else if (type == Constants.SIJIAN) {
+            gid = String.valueOf(Constants.SIJIAN);
+        } else if (type == Constants.ROSI) {
+            gid = String.valueOf(Constants.ROSI);
+        } else if (type == Constants.TUI) {
+            gid = String.valueOf(Constants.TUI);
+        } else if (type == Constants.BOLUOLI) {
+            gid = String.valueOf(Constants.BOLUOLI);
+        } else if (type == Constants.XIUREN) {
+            gid = String.valueOf(Constants.XIUREN);
+        }
+        return gid;
     }
 
 }

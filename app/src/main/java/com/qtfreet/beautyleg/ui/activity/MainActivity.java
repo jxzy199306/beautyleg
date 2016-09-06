@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.pgyersdk.update.PgyUpdateManager;
 import com.qtfreet.beautyleg.R;
+import com.qtfreet.beautyleg.data.Constants;
 import com.qtfreet.beautyleg.ui.App;
 import com.qtfreet.beautyleg.ui.adapter.FragmentAdapter;
 import com.qtfreet.beautyleg.ui.fragment.GirlFragment;
@@ -58,24 +59,18 @@ public class MainActivity extends BaseActivity {
         titles.add("推女郎");
         titles.add("尤果");
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(GirlFragment.newFragment(GirlFragment.XIUREN));
-        fragments.add(GirlFragment.newFragment(GirlFragment.BL));
-        fragments.add(GirlFragment.newFragment(GirlFragment.ROSI));
-        fragments.add(GirlFragment.newFragment(GirlFragment.AISS));
-        fragments.add(GirlFragment.newFragment(GirlFragment.BOLUOLI));
-        fragments.add(GirlFragment.newFragment(GirlFragment.SIBAO));
-        fragments.add(GirlFragment.newFragment(GirlFragment.SIJIAN));
-        fragments.add(GirlFragment.newFragment(GirlFragment.TUI));
-        fragments.add(GirlFragment.newFragment(GirlFragment.YOUGUO));
-        tabLayout.addTab(tabLayout.newTab().setText(titles.get(0)));
-        tabLayout.addTab(tabLayout.newTab().setText(titles.get(1)));
-        tabLayout.addTab(tabLayout.newTab().setText(titles.get(2)));
-        tabLayout.addTab(tabLayout.newTab().setText(titles.get(3)));
-        tabLayout.addTab(tabLayout.newTab().setText(titles.get(4)));
-        tabLayout.addTab(tabLayout.newTab().setText(titles.get(5)));
-        tabLayout.addTab(tabLayout.newTab().setText(titles.get(6)));
-        tabLayout.addTab(tabLayout.newTab().setText(titles.get(7)));
-        tabLayout.addTab(tabLayout.newTab().setText(titles.get(8)));
+        fragments.add(GirlFragment.newFragment(Constants.XIUREN));
+        fragments.add(GirlFragment.newFragment(Constants.BL));
+        fragments.add(GirlFragment.newFragment(Constants.ROSI));
+        fragments.add(GirlFragment.newFragment(Constants.AISS));
+        fragments.add(GirlFragment.newFragment(Constants.BOLUOLI));
+        fragments.add(GirlFragment.newFragment(Constants.SIBAO));
+        fragments.add(GirlFragment.newFragment(Constants.SIJIAN));
+        fragments.add(GirlFragment.newFragment(Constants.TUI));
+        fragments.add(GirlFragment.newFragment(Constants.YOUGUO));
+        for(int i=0;i<8;i++){
+            tabLayout.addTab(tabLayout.newTab().setText(titles.get(i)));
+        }
         viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(new FragmentAdapter(getSupportFragmentManager(), fragments, titles));
         tabLayout.setupWithViewPager(viewPager);

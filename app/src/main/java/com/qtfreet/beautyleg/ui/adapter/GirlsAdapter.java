@@ -1,6 +1,7 @@
 package com.qtfreet.beautyleg.ui.adapter;
 
 import android.content.Context;
+import android.support.annotation.BinderThread;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,6 @@ public class GirlsAdapter extends RecyclerView.Adapter<GirlsAdapter.GirlsViewHod
 
     @Override
     public void onBindViewHolder(GirlsViewHodler holder, int position) {
-
         loadImage(holder, imageInfos.get(position));
     }
 
@@ -50,12 +50,11 @@ public class GirlsAdapter extends RecyclerView.Adapter<GirlsAdapter.GirlsViewHod
         Glide.with(mContext)
                 .load(imageInfo.getUrl()).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop()
                 .into(holder.ivGril);
-
-        if (imageInfo.getType()==1){
-          holder.des.setText("视频：" +imageInfo.getDes());
-        }
-        else {
-            holder.des.setText("套图：" +imageInfo.getDes());
+        holder.des.setText(imageInfo.getDes());
+        if (imageInfo.getType() == 1) {
+            holder.content_type.setText("视频");
+        } else {
+            holder.content_type.setText("套图");
         }
     }
 
@@ -69,11 +68,13 @@ public class GirlsAdapter extends RecyclerView.Adapter<GirlsAdapter.GirlsViewHod
         TextView des;
         @BindView(R.id.iv_gril)
         RadioImageView ivGril;
+        @BindView(R.id.content_type)
+        TextView content_type;
 
 
         public GirlsViewHodler(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -83,7 +84,7 @@ public class GirlsAdapter extends RecyclerView.Adapter<GirlsAdapter.GirlsViewHod
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                   onMeiziClickListener.onMeiziLongClick(v,getAdapterPosition());
+                    onMeiziClickListener.onMeiziLongClick(v, getAdapterPosition());
                     return true;
                 }
             });

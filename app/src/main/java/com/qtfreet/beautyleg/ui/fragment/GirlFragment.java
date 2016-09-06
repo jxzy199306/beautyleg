@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.qtfreet.beautyleg.R;
+import com.qtfreet.beautyleg.data.Constants;
 import com.qtfreet.beautyleg.data.bean.DetailImageBean;
 import com.qtfreet.beautyleg.data.bean.ImageUrlList;
 import com.qtfreet.beautyleg.data.bean.blBean;
@@ -50,23 +51,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnMeiziClickListener {
 
 
-    private static final int REQUEST_FAIL = 2;
-    private static final int GET_URL_SUCCESS = 4;
-    private static final int GET_URL_READY = 6;
-    public static final int AISS = 23;
-    public static final int XIUREN = 9;
-    public static final int BL = 1;
-    public static final int TUI = 15;
-    public static final int BOLUOLI = 30;
-    public static final int ROSI = 6;
-    public static final int YOUGUO = 14;
-    public static final int SIBAO = 11;
-    public static final int SIJIAN = 7;
-    private static final int GET_DOWNLOAD_URL_SUCC = 999;
-    private static final int GET_VIDEO_URL_SUCC = 666;
-    private static final int GET_DOWNLOAD_VIDEO_URL_SUCC = 888;
-    private static final int WRITE_EX = 111;
-    private Context mContext;
+
     private List<imageBean> imageInfo;
     private boolean isLoadMore = false;
     private int hasLoadPage = 0;
@@ -76,90 +61,71 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.getData().getInt(STATE)) {
-                case REQUEST_FAIL:
+            switch (msg.getData().getInt(Constants.STATE)) {
+                case Constants.REQUEST_FAIL:
                     showRefreshing(false);
                     Toast.makeText(getActivity(), "未获取到数据，请重新尝试", Toast.LENGTH_SHORT).show();
                     isLoadMore = false;
                     break;
-                case GET_URL_SUCCESS:
+                case Constants.GET_URL_SUCCESS:
                     showRefreshing(false);
                     mAdapter.notifyDataSetChanged();
                     hasLoadPage++;
                     isLoadMore = false;
                     break;
-                case GET_URL_READY:
+                case Constants.GET_URL_READY:
                     startActivity(new Intent(getActivity(), GirlDetailActivity.class));
                     break;
-                case GET_DOWNLOAD_URL_SUCC:
+                case Constants.GET_DOWNLOAD_URL_SUCC:
                     Intent t = new Intent(getActivity(), DownloadService.class);
                     t.putExtra(DownloadService.TYPE, 0);
-                    t.putExtra(DownloadService.NAME, msg.getData().getString(NAME));
+                    t.putExtra(DownloadService.NAME, msg.getData().getString(Constants.NAME));
                     getActivity().startService(t);
                     break;
-                case GET_VIDEO_URL_SUCC:
+                case Constants.GET_VIDEO_URL_SUCC:
                     Intent i = new Intent(getActivity(), VideoActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString(VideoActivity.VideoActivity, msg.getData().getString(DATA));
+                    bundle.putString(VideoActivity.VideoActivity, msg.getData().getString(Constants.DATA));
                     i.putExtras(bundle);
                     startActivity(i);
                     break;
-                case GET_DOWNLOAD_VIDEO_URL_SUCC:
+                case Constants.GET_DOWNLOAD_VIDEO_URL_SUCC:
                     Intent k = new Intent(getActivity(), DownloadService.class);
                     k.putExtra(DownloadService.TYPE, 1);
-                    k.putExtra(DownloadService.NAME, msg.getData().getString(NAME));
-                    k.putExtra(DownloadService.URL, msg.getData().getString(URL));
+                    k.putExtra(DownloadService.NAME, msg.getData().getString(Constants.NAME));
+                    k.putExtra(DownloadService.URL, msg.getData().getString(Constants.URL));
                     getActivity().startService(k);
                     break;
 
             }
         }
     };
-    private String gid = "9";
+    private String gid;
 
     public static GirlFragment newFragment(int flag) {
         Bundle bundle = new Bundle();
-        bundle.putInt(TYPE, flag);
+        bundle.putInt(Constants.TYPE, flag);
         GirlFragment testFragment = new GirlFragment();
         testFragment.setArguments(bundle);
         return testFragment;
     }
 
-    private static final String TYPE = "type";
+
 
     private StaggeredGridLayoutManager mStaggeredGridLayoutManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getActivity();
         imageInfo = new ArrayList<>();
-        int type = getArguments().getInt(TYPE, AISS);
-        if (type == AISS) {
-            gid = String.valueOf(AISS);
-        } else if (type == BL) {
-            gid = String.valueOf(BL);
-        } else if (type == YOUGUO) {
-            gid = String.valueOf(YOUGUO);
-        } else if (type == SIBAO) {
-            gid = String.valueOf(SIBAO);
-        } else if (type == SIJIAN) {
-            gid = String.valueOf(SIJIAN);
-        } else if (type == ROSI) {
-            gid = String.valueOf(ROSI);
-        } else if (type == TUI) {
-            gid = String.valueOf(TUI);
-        } else if (type == BOLUOLI) {
-            gid = String.valueOf(BOLUOLI);
-        } else if (type == XIUREN) {
-            gid = String.valueOf(XIUREN);
-        }
+        int type = getArguments().getInt(Constants.TYPE, Constants.AISS);
+        gid = Utils.getType(type);
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    WRITE_EX);
+                    Constants.WRITE_EX);
         }
 
 
@@ -169,7 +135,7 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
-        if (requestCode == WRITE_EX) {
+        if (requestCode == Constants.WRITE_EX) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             } else {
                 Toast.makeText(getActivity(), "未赋予权限，将不可使用下载功能", Toast.LENGTH_SHORT).show();
@@ -203,7 +169,7 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         if (response.body() == null) {
             //error
             Bundle bundle = new Bundle();
-            bundle.putInt(STATE, REQUEST_FAIL);
+            bundle.putInt(Constants.STATE, Constants.REQUEST_FAIL);
             sendMessage(bundle);
             return true;
         }
@@ -217,7 +183,7 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         mStaggeredGridLayoutManager = new StaggeredGridLayoutManager(2,
                 StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(mStaggeredGridLayoutManager);
-        mAdapter = new GirlsAdapter(mContext, imageInfo);
+        mAdapter = new GirlsAdapter(getActivity(), imageInfo);
         mAdapter.setOnMeiziClickListener(this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -253,7 +219,7 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void showRefreshing(boolean isShow) {
         if (isShow) {
-            refresh.setProgressViewOffset(false, 0, (int) (mContext.getResources().getDisplayMetrics().density * 24 +
+            refresh.setProgressViewOffset(false, 0, (int) (getActivity().getResources().getDisplayMetrics().density * 24 +
                     0.5f));
             refresh.setRefreshing(true);
         } else {
@@ -274,7 +240,6 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void requestData(int page) {
         showRefreshing(true);
         long time = System.currentTimeMillis();
-
         Call<List<blBean>> call = getApiService().TU(gid, "-1", "testviewoo", "30", String.valueOf(time) + String.valueOf(time), "1464360635524", page, "23f21003665979d02cc1df4a0f009b32");
         call.enqueue(new Callback<List<blBean>>() {
             @Override
@@ -287,7 +252,7 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         Toast.makeText(getActivity(), "未获取到数据，请重新尝试", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    imageBean imageBean = null;
+                    imageBean imageBean;
                     for (int i = 0; i < size; i++) {
                         imageBean = new imageBean();
                         imageBean.setUrl(response.body().get(i).getThumbpicurl());
@@ -299,7 +264,7 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     }
                 }
                 Bundle bundle = new Bundle();
-                bundle.putInt(STATE, GET_URL_SUCCESS);
+                bundle.putInt(Constants.STATE, Constants.GET_URL_SUCCESS);
                 sendMessage(bundle);
             }
 
@@ -344,18 +309,16 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     ImageUrlList.bigurl = new ArrayList<>();
                     ImageUrlList.bigurl.clear();
                     for (int i = 0; i < size; i++) {
-                        Log.e("TAG11", image.get(i).getThumbpicurl());
                         ImageUrlList.bigurl.add(image.get(i).getThumbpicurl());
                     }
                 } else if(level==1){
                     ImageUrlList.url = new ArrayList<>();
                     ImageUrlList.url.clear();
                     for (int i = 0; i < size; i++) {
-                        Log.e("TAG22", image.get(i).getThumbpicurl());
                         ImageUrlList.url.add(image.get(i).getThumbpicurl());
                     }
                     Bundle bundle = new Bundle();
-                    bundle.putInt(STATE, GET_URL_READY);
+                    bundle.putInt(Constants.STATE, Constants.GET_URL_READY);
                     sendMessage(bundle);
                 }
 
@@ -386,14 +349,14 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         } else if (type == 1) {
             try {
-                requestVideoUrl(id);
+                requestVideoUrl(id,Constants.GET_VIDEO_URL_SUCC);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void requestVideoUrl(int id) throws Exception {
+    private void requestVideoUrl(int id, final int task) throws Exception {
         Call<videoBean> c = getApiService().Video(id, "1", EncryptSign(time, id, ""), time, "Release", "com.mason.beautyleg", "41", "08:00:27:04:69:94", "[sessionid]", Api.TOKEN, false);
         c.enqueue(new Callback<videoBean>() {
             @Override
@@ -401,11 +364,20 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 if (RequestFail(response) || response.body().getVideoList() == null) {
                     return;
                 }
-                Log.e("TAG", response.body().getVideoList().size() + "   ");
                 String url = response.body().getVideoList().get(response.body().getVideoList().size() - 1).getVideoUrl();
                 Bundle bundle = new Bundle();
-                bundle.putInt(STATE, GET_VIDEO_URL_SUCC);
-                bundle.putString(DATA, url);
+                switch (task){
+                    case Constants.GET_VIDEO_URL_SUCC:
+                        bundle.putInt(Constants.STATE, Constants.GET_VIDEO_URL_SUCC);
+                        bundle.putString(Constants.DATA, url);
+                        break;
+                    case Constants.GET_DOWNLOAD_VIDEO_URL_SUCC:
+                        bundle.putInt(Constants.STATE, Constants.GET_DOWNLOAD_VIDEO_URL_SUCC);
+                        bundle.putString(Constants.URL, response.body().getVideoList().get(response.body().getVideoList().size() - 1).getVideoUrl());
+                        bundle.putString(Constants.NAME, response.body().getAlbumname());
+                        break;
+                }
+
                 sendMessage(bundle);
             }
 
@@ -415,12 +387,6 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
     }
-
-
-    private static final String STATE = "state";
-    private static final String DATA = "data";
-    private static final String NAME = "name";
-    private static final String URL = "url";
 
     @Override
     public void onMeiziLongClick(View itemView, final int position) {
@@ -440,7 +406,7 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 @Override
                 public void onClick(int which) {
                     try {
-                        downloadVideoUrl(imageInfo.get(position).getId());
+                        requestVideoUrl(imageInfo.get(position).getId(), Constants.GET_DOWNLOAD_VIDEO_URL_SUCC);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -450,28 +416,6 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     }
 
-    private void downloadVideoUrl(int id) throws Exception {
-        Call<videoBean> c = getApiService().Video(id, "1", EncryptSign(time, id, ""), time, "Release", "com.mason.beautyleg", "41", "08:00:27:04:69:94", "[sessionid]", Api.TOKEN, false);
-        c.enqueue(new Callback<videoBean>() {
-            @Override
-            public void onResponse(Call<videoBean> call, Response<videoBean> response) {
-                if (response.body().getVideoList() == null) {
-                    Toast.makeText(getActivity(), "未找到该视频的资源", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Bundle bundle = new Bundle();
-                bundle.putInt(STATE, GET_DOWNLOAD_VIDEO_URL_SUCC);
-                bundle.putString(URL, response.body().getVideoList().get(response.body().getVideoList().size() - 1).getVideoUrl());
-                bundle.putString(NAME, response.body().getAlbumname());
-                sendMessage(bundle);
-            }
-
-            @Override
-            public void onFailure(Call<videoBean> call, Throwable t) {
-
-            }
-        });
-    }
 
     private void sendMessage(Bundle bundle) {
         Message msg = Message.obtain();
@@ -500,12 +444,11 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     return;
                 }
                 for (int i = 0; i < size; i++) {
-                    Log.e("TAG", image.get(i).getThumbpicurl());
                     ImageUrlList.bigurl.add(image.get(i).getThumbpicurl());
                 }
                 Bundle bundle = new Bundle();
-                bundle.putInt(STATE, GET_DOWNLOAD_URL_SUCC);
-                bundle.putString(NAME, imageInfo.get(postion).getAlbumname());
+                bundle.putInt(Constants.STATE, Constants.GET_DOWNLOAD_URL_SUCC);
+                bundle.putString(Constants.NAME, imageInfo.get(postion).getAlbumname());
                 sendMessage(bundle);
             }
 
