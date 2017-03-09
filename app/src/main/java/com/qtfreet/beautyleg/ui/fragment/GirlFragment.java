@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +50,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnMeiziClickListener {
-
 
 
     private List<imageBean> imageInfo;
@@ -109,7 +109,6 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         testFragment.setArguments(bundle);
         return testFragment;
     }
-
 
 
     private StaggeredGridLayoutManager mStaggeredGridLayoutManager;
@@ -291,7 +290,7 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void requsetDetailReponse(final int level, int id) {
         long time = System.currentTimeMillis();
-        String t = level==3?"301000":"101000";
+        String t = level == 3 ? "301000" : "101000";
         Call<List<DetailImageBean>> c = getApiService().Detail(1000, time, level, EncryptSign(time, id, t), id, String.valueOf(time) + String.valueOf(time));
         c.enqueue(new Callback<List<DetailImageBean>>() {
             @Override
@@ -311,7 +310,7 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     for (int i = 0; i < size; i++) {
                         ImageUrlList.bigurl.add(image.get(i).getThumbpicurl());
                     }
-                } else if(level==1){
+                } else if (level == 1) {
                     ImageUrlList.url = new ArrayList<>();
                     ImageUrlList.url.clear();
                     for (int i = 0; i < size; i++) {
@@ -349,7 +348,7 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         } else if (type == 1) {
             try {
-                requestVideoUrl(id,Constants.GET_VIDEO_URL_SUCC);
+                requestVideoUrl(id, Constants.GET_VIDEO_URL_SUCC);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -357,21 +356,27 @@ public class GirlFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void requestVideoUrl(int id, final int task) throws Exception {
-        Call<videoBean> c = getApiService().Video(id, "1", EncryptSign(time, id, ""), time, "Release", "com.mason.beautyleg", "41", "08:00:27:04:69:94", "[sessionid]", Api.TOKEN, false);
+        Call<videoBean> c = getApiService().Video(id, "1", EncryptSign(time, id, ""), time, "Release", "com.mason.beautyleg", "80", "08:00:27:04:69:94", "[sessionid]", Api.TOKEN, false);
         c.enqueue(new Callback<videoBean>() {
             @Override
             public void onResponse(Call<videoBean> call, Response<videoBean> response) {
                 if (RequestFail(response) || response.body().getVideoList() == null) {
                     return;
                 }
-                String url = response.body().getVideoList().get(response.body().getVideoList().size() - 1).getVideoUrl();
-              //  Log.e("TAG",url+"                        00000000000000" );
-                if(url==null){
+                List<videoBean.VideoListBean> videoList = response.body().getVideoList();
+                int videoListSize = videoList.size();
+                String url = "";
+                if (videoListSize == 3) {
+                    url = videoList.get(videoListSize - 2).getVideoUrl();
+                } else if (videoListSize == 2) {
+                    url = videoList.get(videoListSize - 1).getVideoUrl();
+                }
+                if (TextUtils.isEmpty(url)) {
                     Toast.makeText(getActivity(), "未获取到视频地址", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Bundle bundle = new Bundle();
-                switch (task){
+                switch (task) {
                     case Constants.GET_VIDEO_URL_SUCC:
                         bundle.putInt(Constants.STATE, Constants.GET_VIDEO_URL_SUCC);
                         bundle.putString(Constants.DATA, url);

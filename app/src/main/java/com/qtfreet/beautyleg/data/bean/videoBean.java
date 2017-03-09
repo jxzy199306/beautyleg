@@ -7,8 +7,6 @@ import java.util.List;
  */
 public class videoBean {
 
-
-
     private int id;
     private int groupid;
     private int modelid;
@@ -20,9 +18,11 @@ public class videoBean {
     private String filename;
     private String thumbpicurl;
     private int type;
+    private PhotoListMapBean photoListMap;
     private ModelBean model;
     private String sourceUrl;
     private int fileCount;
+    private int worktype;
     private int zan;
     private int click;
     private int flag;
@@ -121,6 +121,14 @@ public class videoBean {
         this.type = type;
     }
 
+    public PhotoListMapBean getPhotoListMap() {
+        return photoListMap;
+    }
+
+    public void setPhotoListMap(PhotoListMapBean photoListMap) {
+        this.photoListMap = photoListMap;
+    }
+
     public ModelBean getModel() {
         return model;
     }
@@ -143,6 +151,14 @@ public class videoBean {
 
     public void setFileCount(int fileCount) {
         this.fileCount = fileCount;
+    }
+
+    public int getWorktype() {
+        return worktype;
+    }
+
+    public void setWorktype(int worktype) {
+        this.worktype = worktype;
     }
 
     public int getZan() {
@@ -217,7 +233,23 @@ public class videoBean {
         this.photoDefList = photoDefList;
     }
 
+    public static class PhotoListMapBean {
+    }
+
     public static class ModelBean {
+        /**
+         * id : 0
+         * groupid : 1
+         * name : Beautyleg
+         * namecn : 腿模影音电子杂志
+         * description :   Beautyleg是以美腿写真为主的腿模影音电子杂志媒体，台湾图站套图屋主打官方发布的腿图，其次还有台湾当地某些新闻发布会拍摄的腿图，即Beautyleg新闻图片。另外官方也会定期放出写真视频。Beautyleg系列以美腿著称，当然首先看重的是模特腿形，因此有些模特相貌平平，但整体而言Beautyleg的模特气质上佳。
+         腿模也是一种职业模特，Beautyleg已有媒体杂志开发及厂商合作计划，邀请优质模特儿一同为腿模及厂商代言。Beautyleg台湾的模特居多，包括台北电脑展等高水平展览会，聘请的都是Beautyleg的模特。
+         * coverimage :
+         * albumcount : 733
+         * status : 0
+         * flag : 0
+         */
+
         private int id;
         private int groupid;
         private String name;
@@ -302,6 +334,23 @@ public class videoBean {
     }
 
     public static class VideoListBean {
+        /**
+         * id : 9014
+         * albumid : 11242
+         * vd : 0
+         * vdDesc : 480P 高清
+         * filedirectory : /BeautylegVideo/Joanna/
+         * filename : No.730Joanna_480p.mp4
+         * fileType : mp4
+         * videoUrl : http://data.vod.itc.cn/?new=/23/213/Gt8Jmx16I0JXnIrfEwGYIB.mp4&mkey=8NKtnG0yTOs9zaadJ0vvj04oI0ZFf2ZT&ch=tv&vid=87834634&uid=1488900965965&plat=17&pt=5&prod=ugc&pg=1&eye=0&cateCode=101&id=9014
+         * referer :
+         * portrait : 0
+         * worktype : 0
+         * status : 0
+         * createtime : Mar 7, 2017
+         * fileSize : 0
+         */
+
         private int id;
         private int albumid;
         private int vd;
@@ -312,6 +361,8 @@ public class videoBean {
         private String videoUrl;
         private String referer;
         private int portrait;
+        private int worktype;
+        private int status;
         private String createtime;
         private int fileSize;
 
@@ -393,6 +444,22 @@ public class videoBean {
 
         public void setPortrait(int portrait) {
             this.portrait = portrait;
+        }
+
+        public int getWorktype() {
+            return worktype;
+        }
+
+        public void setWorktype(int worktype) {
+            this.worktype = worktype;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
         }
 
         public String getCreatetime() {
